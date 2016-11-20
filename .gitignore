@@ -4,4 +4,6 @@
 !LICENSE.txt
 !.editorconfig
 !.gitignore
+!config/composer.json
+!config/composer.lock
 !config/wp-config.php

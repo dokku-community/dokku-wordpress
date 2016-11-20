@@ -14,8 +14,6 @@ ifndef MYSQL_IMAGE_VERSION
 	MYSQL_IMAGE_VERSION = 5.6.34
 endif
 
-COMPOSER := $(shell command -v composer 2> /dev/null)
-
 
 .PHONY: all
 all: help ## outputs the help message
@@ -32,9 +30,6 @@ endif
 ifndef SERVER_NAME
 	$(error "Missing SERVER_NAME environment variable, this should be something like 'dokku.me'")
 endif
-ifndef COMPOSER
-    $(error "composer binary is not available, please install composer into your system path")
-endif
 	# creating the wordpress repo
 	@test -d $(APP_NAME) || (git clone --quiet https://github.com/WordPress/WordPress.git $(APP_NAME) && cd $(APP_NAME) && git checkout -q tags/$(WORDPRESS_VERSION) && git branch -qD master && git checkout -qb master)
 	# adding wp-config.php from gist
@@ -42,8 +37,7 @@ endif
 	# adding .env file to configure buildpack
 	@test -f $(APP_NAME)/.buildpacks   || (echo "https://github.com/heroku/heroku-buildpack-php.git#$(BUILDPACK_VERSION)" > $(APP_NAME)/.buildpacks && cd $(APP_NAME) && git add .buildpacks && git commit -qm "Forcing php buildpack usage")
 	# ensuring our composer.json loads with php 5.6 and loads the mysql extension
-	# run `composer install` if dokku complains about missing a composer.lock
-	@test -f $(APP_NAME)/composer.json || (echo '{"require": {"php": ">=5.6", "ext-mysql": "*"}}' > $(APP_NAME)/composer.json && cd $(APP_NAME) && composer update && git add composer.json composer.lock && git commit -qm "Use PHP 5.6 and the mysql extension")
+	@test -f $(APP_NAME)/composer.json || (cp config/composer.json $(APP_NAME)/composer.json && cp config/composer.lock $(APP_NAME)/composer.lock && cd $(APP_NAME) && git add composer.json composer.lock && git commit -qm "Use PHP 5.6 and the mysql extension")
 	# setting the correct dokku remote for your app and server combination
 	@cd $(APP_NAME) && (git remote rm dokku 2> /dev/null || true) && git remote add dokku "dokku@$(SERVER_NAME):$(APP_NAME)"
 	# retrieving potential salts and writing them to /tmp/wp-salts
