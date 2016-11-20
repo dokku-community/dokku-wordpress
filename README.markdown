@@ -4,13 +4,18 @@ A repository to help you setup WordPress on a Dokku server.
 
 ## Requirements
 
-- A Dokku server
+- A Dokku server. Tested on 0.7.2+
+- The [dokku-mysql](https://github.com/dokku/dokku-mysql) plugin
 - PHP 5.x and Composer installed locally (to run `composer update` correctly)
 - `make` installed locally
 
 ## Usage
 
-This repository generates an app directory based on environment variables, as well as instructions for configuring your app on the Dokku server. To use, run the following (and then read the instructions!):
+This repository generates an app directory based on environment variables, as well as instructions for configuring your app on the Dokku server.
+
+> Plugins and Uploads will be stored on the host using persistent storage. Unless you do similar with themes, this setup will expect them to be distributed with the wordpress installation.
+
+To use, run the following (and then read the instructions!):
 
 ```shell
 # both APP_NAME and SERVER_NAME are required
@@ -39,6 +44,5 @@ export MYSQL_IMAGE_VERSION=5.6.33
 
 make build APP_NAME=blog SERVER_NAME=dokku.me
 ```
-
 
 > As of 2016-11-20, WordPress 3.7.16 and below have issues with MySQL 5.7 and may throw errors during installation. While these *might* be okay to ignore, please keep this in mind before upgrading to a more recent version of MySQL.
