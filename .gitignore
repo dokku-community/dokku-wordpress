@@ -4,3 +4,4 @@
 !LICENSE.txt
 !.editorconfig
 !.gitignore
+!config/wp-config.php
