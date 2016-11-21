@@ -10,6 +10,16 @@ ifndef BUILDPACK_VERSION
 	BUILDPACK_VERSION = v114
 endif
 
+ifndef DOKKU_USER
+	DOKKU_USER = dokku
+endif
+
+ifdef UNATTENDED_CREATION
+	DOKKU_CMD = ssh $(DOKKU_USER)@$(SERVER_NAME)
+else
+	DOKKU_CMD = dokku
+endif
+
 CURL_INSTALLED := $(shell command -v curl 2> /dev/null)
 WGET_INSTALLED := $(shell command -v wget 2> /dev/null)
 
@@ -51,8 +61,9 @@ ifdef WGET_INSTALLED
 	@wget -qO /tmp/wp-salts https://api.wordpress.org/secret-key/1.1/salt/
 endif
 endif
-	@sed -i.bak -e "s/);//g" -e "s/define('/dokku config:set $(APP_NAME) /g" -e "s/SALT',[ ]*/SALT=/g" -e "s/KEY',[ ]*/KEY=/g" /tmp/wp-salts && rm /tmp/wp-salts.bak
+	@sed -i.bak -e 's/ //g' -e "s/);//g" -e "s/define('/$(DOKKU_CMD) config:set $(APP_NAME) /g" -e "s/SALT',/SALT=/g" -e "s/KEY',[ ]*/KEY=/g" /tmp/wp-salts && rm /tmp/wp-salts.bak
 
+ifndef UNATTENDED_CREATION
 	# run the following commands on the server to setup the app:
 	@echo ""
 	@echo "dokku apps:create $(APP_NAME)"
@@ -84,3 +95,24 @@ endif
 	@echo ""
 	@echo "cd $(APP_NAME)"
 	@echo "git push dokku master"
+else
+	@chmod +x /tmp/wp-salts
+	$(DOKKU_CMD) apps:create $(APP_NAME)
+	$(DOKKU_CMD) storage:mount $(APP_NAME) /var/lib/dokku/data/storage/$(APP_NAME)-plugins:/apps/wp-content/plugins
+	$(DOKKU_CMD) storage:mount $(APP_NAME) /var/lib/dokku/data/storage/$(APP_NAME)-uploads:/apps/wp-content/uploads
+	$(DOKKU_CMD) mysql:create $(APP_NAME)-database
+	$(DOKKU_CMD) mysql:link $(APP_NAME)-database $(APP_NAME)
+	@/tmp/wp-salts
+	@echo ""
+	# run the following commands on the server to ensure data is stored properly on disk
+	@echo ""
+	@echo "mkdir -p /var/lib/dokku/data/storage/$(APP_NAME)-plugins"
+	@echo "chown 32767:32767 /var/lib/dokku/data/storage/$(APP_NAME)-plugins"
+	@echo "mkdir -p /var/lib/dokku/data/storage/$(APP_NAME)-uploads"
+	@echo "chown 32767:32767 /var/lib/dokku/data/storage/$(APP_NAME)-uploads"
+	@echo ""
+	# now, on your local machine, change directory to your new wordpress app, and push it up
+	@echo ""
+	@echo "cd $(APP_NAME)"
+	@echo "git push dokku master"
+endif

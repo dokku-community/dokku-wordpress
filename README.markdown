@@ -36,3 +36,11 @@ export WORDPRESS_VERSION=3.7.16
 
 make build APP_NAME=blog SERVER_NAME=dokku.me
 ```
+
+Want a mostly unattended installation? You can also execute it with the `UNATTENDED_CREATION` environment variable. You will only need to create the requisite persistent storage directories and push the repository. All configuration will be manually performed using the `dokku` user against the configured `SERVER_NAME`.
+
+```shell
+export UNATTENDED_CREATION=1
+
+make build APP_NAME=blog SERVER_NAME=dokku.me
+```
