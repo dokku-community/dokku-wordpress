@@ -14,7 +14,6 @@ ifndef MYSQL_IMAGE_VERSION
 	MYSQL_IMAGE_VERSION = 5.6.34
 endif
 
-
 .PHONY: all
 all: help ## outputs the help message
 
