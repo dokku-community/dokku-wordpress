@@ -10,10 +10,6 @@ ifndef BUILDPACK_VERSION
 	BUILDPACK_VERSION = v114
 endif
 
-ifndef MYSQL_IMAGE_VERSION
-	MYSQL_IMAGE_VERSION = 5.6.34
-endif
-
 CURL_INSTALLED := $(shell command -v curl 2> /dev/null)
 WGET_INSTALLED := $(shell command -v wget 2> /dev/null)
 
@@ -75,7 +71,6 @@ endif
 	@echo ""
 	# setup your mysql database and link it to your app
 	@echo ""
-	@echo "export MYSQL_IMAGE_VERSION=$(MYSQL_IMAGE_VERSION)"
 	@echo "dokku mysql:create $(APP_NAME)-database"
 	@echo "dokku mysql:link $(APP_NAME)-database $(APP_NAME)"
 	@echo ""

@@ -36,13 +36,3 @@ export WORDPRESS_VERSION=3.7.16
 
 make build APP_NAME=blog SERVER_NAME=dokku.me
 ```
-
-Finally, while we peg the mysql image version to `5.6.34`, you can also customize that.
-
-```shell
-export MYSQL_IMAGE_VERSION=5.6.33
-
-make build APP_NAME=blog SERVER_NAME=dokku.me
-```
-
-> As of 2016-11-20, WordPress 3.7.16 and below have issues with MySQL 5.7 and may throw errors during installation. While these *might* be okay to ignore, please keep this in mind before upgrading to a more recent version of MySQL.
