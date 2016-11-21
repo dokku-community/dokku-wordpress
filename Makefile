@@ -14,6 +14,9 @@ ifndef MYSQL_IMAGE_VERSION
 	MYSQL_IMAGE_VERSION = 5.6.34
 endif
 
+CURL_INSTALLED := $(shell command -v curl 2> /dev/null)
+WGET_INSTALLED := $(shell command -v wget 2> /dev/null)
+
 .PHONY: all
 all: help ## outputs the help message
 
@@ -29,6 +32,11 @@ endif
 ifndef SERVER_NAME
 	$(error "Missing SERVER_NAME environment variable, this should be something like 'dokku.me'")
 endif
+ifndef CURL_INSTALLED
+ifndef WGET_INSTALLED
+	$(error "Neither curl nor wget are installed, and at least one is necessary for retrieving salts")
+endif
+endif
 	# creating the wordpress repo
 	@test -d $(APP_NAME) || (git clone --quiet https://github.com/WordPress/WordPress.git $(APP_NAME) && cd $(APP_NAME) && git checkout -q tags/$(WORDPRESS_VERSION) && git branch -qD master && git checkout -qb master)
 	# adding wp-config.php from gist
@@ -40,7 +48,13 @@ endif
 	# setting the correct dokku remote for your app and server combination
 	@cd $(APP_NAME) && (git remote rm dokku 2> /dev/null || true) && git remote add dokku "dokku@$(SERVER_NAME):$(APP_NAME)"
 	# retrieving potential salts and writing them to /tmp/wp-salts
+ifdef CURL_INSTALLED
+	@curl -so /tmp/wp-salts https://api.wordpress.org/secret-key/1.1/salt/
+else
+ifdef WGET_INSTALLED
 	@wget -qO /tmp/wp-salts https://api.wordpress.org/secret-key/1.1/salt/
+endif
+endif
 	# run the following commands on the server to setup the app:
 	@echo ""
 	@echo "dokku apps:create $(APP_NAME)"
