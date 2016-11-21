@@ -55,6 +55,8 @@ ifdef WGET_INSTALLED
 	@wget -qO /tmp/wp-salts https://api.wordpress.org/secret-key/1.1/salt/
 endif
 endif
+	@sed -i.bak -e "s/);//g" -e "s/define('/dokku config:set $(APP_NAME) /g" -e "s/SALT',[ ]*/SALT=/g" -e "s/KEY',[ ]*/KEY=/g" /tmp/wp-salts && rm /tmp/wp-salts.bak
+
 	# run the following commands on the server to setup the app:
 	@echo ""
 	@echo "dokku apps:create $(APP_NAME)"
@@ -81,7 +83,6 @@ endif
 	# the following were generated using the wordpress salt api: https://api.wordpress.org/secret-key/1.1/salt/
 	# and use the following commands to set them up:
 	@echo ""
-	@sed -i.bak -e "s/);//g" -e "s/define('/dokku config:set $(APP_NAME) /g" -e "s/SALT',[ ]*/SALT=/g" -e "s/KEY',[ ]*/KEY=/g" /tmp/wp-salts && rm /tmp/wp-salts.bak
 	@cat /tmp/wp-salts
 	@echo ""
 	# now, on your local machine, change directory to your new wordpress app, and push it up
