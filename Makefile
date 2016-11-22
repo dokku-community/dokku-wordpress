@@ -72,13 +72,13 @@ ifndef UNATTENDED_CREATION
 	@echo ""
 	@echo "mkdir -p /var/lib/dokku/data/storage/$(APP_NAME)-plugins"
 	@echo "chown 32767:32767 /var/lib/dokku/data/storage/$(APP_NAME)-plugins"
-	@echo "dokku storage:mount $(APP_NAME) /var/lib/dokku/data/storage/$(APP_NAME)-plugins:/apps/wp-content/plugins"
+	@echo "dokku storage:mount $(APP_NAME) /var/lib/dokku/data/storage/$(APP_NAME)-plugins:/app/wp-content/plugins"
 	@echo ""
 	# setup upload persistent storage
 	@echo ""
 	@echo "mkdir -p /var/lib/dokku/data/storage/$(APP_NAME)-uploads"
 	@echo "chown 32767:32767 /var/lib/dokku/data/storage/$(APP_NAME)-uploads"
-	@echo "dokku storage:mount $(APP_NAME) /var/lib/dokku/data/storage/$(APP_NAME)-uploads:/apps/wp-content/uploads"
+	@echo "dokku storage:mount $(APP_NAME) /var/lib/dokku/data/storage/$(APP_NAME)-uploads:/app/wp-content/uploads"
 	@echo ""
 	# setup your mysql database and link it to your app
 	@echo ""
@@ -98,8 +98,8 @@ ifndef UNATTENDED_CREATION
 else
 	@chmod +x /tmp/wp-salts
 	$(DOKKU_CMD) apps:create $(APP_NAME)
-	$(DOKKU_CMD) storage:mount $(APP_NAME) /var/lib/dokku/data/storage/$(APP_NAME)-plugins:/apps/wp-content/plugins
-	$(DOKKU_CMD) storage:mount $(APP_NAME) /var/lib/dokku/data/storage/$(APP_NAME)-uploads:/apps/wp-content/uploads
+	$(DOKKU_CMD) storage:mount $(APP_NAME) /var/lib/dokku/data/storage/$(APP_NAME)-plugins:/app/wp-content/plugins
+	$(DOKKU_CMD) storage:mount $(APP_NAME) /var/lib/dokku/data/storage/$(APP_NAME)-uploads:/app/wp-content/uploads
 	$(DOKKU_CMD) mysql:create $(APP_NAME)-database
 	$(DOKKU_CMD) mysql:link $(APP_NAME)-database $(APP_NAME)
 	@/tmp/wp-salts
