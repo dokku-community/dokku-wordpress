@@ -116,3 +116,17 @@ else
 	@echo "cd $(APP_NAME)"
 	@echo "git push dokku master"
 endif
+
+.PHONY: destroy
+destroy: ## destroys an existing wordpress blog installation and outputs undeploy instructions
+rm -rf $(APP_NAME)
+$(DOKKU_CMD) —force apps:destroy $(APP_NAME)
+$(DOKKU_CMD) storage:unmount $(APP_NAME) /var/lib/dokku/data/storage/$(APP_NAME)-plugins:/app/wp-content/plugins
+$(DOKKU_CMD) storage:unmount $(APP_NAME) /var/lib/dokku/data/storage/$(APP_NAME)-uploads:/app/wp-content/uploads
+# destroy the mysql database
+$(DOKKU_CMD) mysql:destroy $(APP_NAME)-database
+# run the following commands on the server to remove storage directories on disk
+@echo ""
+@echo "rm -rf /var/lib/dokku/data/storage/$(APP_NAME)-plugins"
+@echo "rm -rf /var/lib/dokku/data/storage/$(APP_NAME)-uploads"
+@echo ""
