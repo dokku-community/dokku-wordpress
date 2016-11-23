@@ -119,7 +119,6 @@ endif
 
 .PHONY: destroy
 destroy: ## destroys an existing wordpress blog installation and outputs undeploy instructions
-rm -rf $(APP_NAME)
 $(DOKKU_CMD) —force apps:destroy $(APP_NAME)
 $(DOKKU_CMD) storage:unmount $(APP_NAME) /var/lib/dokku/data/storage/$(APP_NAME)-plugins:/app/wp-content/plugins
 $(DOKKU_CMD) storage:unmount $(APP_NAME) /var/lib/dokku/data/storage/$(APP_NAME)-uploads:/app/wp-content/uploads
@@ -130,3 +129,6 @@ $(DOKKU_CMD) mysql:destroy $(APP_NAME)-database
 @echo "rm -rf /var/lib/dokku/data/storage/$(APP_NAME)-plugins"
 @echo "rm -rf /var/lib/dokku/data/storage/$(APP_NAME)-uploads"
 @echo ""
+# now, on your local machine, cd into your app's parent directory and remove the app
+@echo ""
+@echo "rm -rf $(APP_NAME)"
