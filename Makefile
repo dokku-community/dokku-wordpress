@@ -143,7 +143,7 @@ endif
 .PHONY: input
 input: ## ask for input
 	read -p "Are you sure you want to destroy $(APP_NAME) (y/n)? This action is irreversible. " -n 1 -r
-	echo # (optional) move to a new line
+	echo ""
 	if [[ ! $REPLY =~ ^[Yy]$ ]]
 	then
     [[ "$0" = "$BASH_SOURCE" ]] && exit 1 || return 1 # handle exits from shell or function but don't exit interactive shell
