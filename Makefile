@@ -119,16 +119,22 @@ endif
 
 .PHONY: destroy
 destroy: ## destroys an existing wordpress blog installation and outputs undeploy instructions
-$(DOKKU_CMD) —force apps:destroy $(APP_NAME)
-$(DOKKU_CMD) storage:unmount $(APP_NAME) /var/lib/dokku/data/storage/$(APP_NAME)-plugins:/app/wp-content/plugins
-$(DOKKU_CMD) storage:unmount $(APP_NAME) /var/lib/dokku/data/storage/$(APP_NAME)-uploads:/app/wp-content/uploads
-# destroy the mysql database
-$(DOKKU_CMD) mysql:destroy $(APP_NAME)-database
-# run the following commands on the server to remove storage directories on disk
-@echo ""
-@echo "rm -rf /var/lib/dokku/data/storage/$(APP_NAME)-plugins"
-@echo "rm -rf /var/lib/dokku/data/storage/$(APP_NAME)-uploads"
-@echo ""
-# now, on your local machine, cd into your app's parent directory and remove the app
-@echo ""
-@echo "rm -rf $(APP_NAME)"
+ifndef APP_NAME
+	$(error "Missing APP_NAME environment variable, this should be the name of your blog app")
+endif
+ifndef SERVER_NAME
+	$(error "Missing SERVER_NAME environment variable, this should be something like 'dokku.me'")
+endif
+	$(DOKKU_CMD) —force apps:destroy $(APP_NAME)
+	$(DOKKU_CMD) storage:unmount $(APP_NAME) /var/lib/dokku/data/storage/$(APP_NAME)-plugins:/app/wp-content/plugins
+	$(DOKKU_CMD) storage:unmount $(APP_NAME) /var/lib/dokku/data/storage/$(APP_NAME)-uploads:/app/wp-content/uploads
+	# destroy the mysql database
+	$(DOKKU_CMD) mysql:destroy $(APP_NAME)-database
+	# run the following commands on the server to remove storage directories on disk
+	@echo ""
+	@echo "rm -rf /var/lib/dokku/data/storage/$(APP_NAME)-plugins"
+	@echo "rm -rf /var/lib/dokku/data/storage/$(APP_NAME)-uploads"
+	@echo ""
+	# now, on your local machine, cd into your app's parent directory and remove the app
+	@echo ""
+	@echo "rm -rf $(APP_NAME)"
