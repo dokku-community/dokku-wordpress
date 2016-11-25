@@ -125,6 +125,7 @@ endif
 ifndef SERVER_NAME
 	$(error "Missing SERVER_NAME environment variable, this should be something like 'dokku.me'")
 endif
+	DOKKU_CMD = ssh $(DOKKU_USER)@$(SERVER_NAME)
 	$(DOKKU_CMD) —force apps:destroy $(APP_NAME)
 	$(DOKKU_CMD) storage:unmount $(APP_NAME) /var/lib/dokku/data/storage/$(APP_NAME)-plugins:/app/wp-content/plugins
 	$(DOKKU_CMD) storage:unmount $(APP_NAME) /var/lib/dokku/data/storage/$(APP_NAME)-uploads:/app/wp-content/uploads
@@ -138,3 +139,12 @@ endif
 	# now, on your local machine, cd into your app's parent directory and remove the app
 	@echo ""
 	@echo "rm -rf $(APP_NAME)"
+
+.PHONY: input
+input: ## ask for input
+	read -p "Are you sure you want to destroy $(APP_NAME) (y/n)? This action is irreversible. " -n 1 -r
+	echo ""
+	if [[ $REPLY =~ ^[Yy]$ ]]
+	then
+		@echo "Do dangerous stuff now!"
+	fi
