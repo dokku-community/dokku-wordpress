@@ -125,10 +125,7 @@ endif
 ifndef SERVER_NAME
 	$(error "Missing SERVER_NAME environment variable, this should be something like 'dokku.me'")
 endif
-	DOKKU_CMD = ssh $(DOKKU_USER)@$(SERVER_NAME)
-	$(DOKKU_CMD) —force apps:destroy $(APP_NAME)
-	$(DOKKU_CMD) storage:unmount $(APP_NAME) /var/lib/dokku/data/storage/$(APP_NAME)-plugins:/app/wp-content/plugins
-	$(DOKKU_CMD) storage:unmount $(APP_NAME) /var/lib/dokku/data/storage/$(APP_NAME)-uploads:/app/wp-content/uploads
+	$(DOKKU_CMD) -- --force apps:destroy $(APP_NAME)
 	# destroy the mysql database
 	$(DOKKU_CMD) mysql:destroy $(APP_NAME)-database
 	# run the following commands on the server to remove storage directories on disk
