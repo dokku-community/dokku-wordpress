@@ -139,13 +139,3 @@ endif
 	# now, on your local machine, cd into your app's parent directory and remove the app
 	@echo ""
 	@echo "rm -rf $(APP_NAME)"
-
-.PHONY: input
-input: ## ask for input
-	read -p "Are you sure you want to destroy $(APP_NAME) (y/n)? This action is irreversible. " -n 1 -r
-	echo ""
-	if [[ ! $REPLY =~ ^[Yy]$ ]]
-	then
-    [[ "$0" = "$BASH_SOURCE" ]] && exit 1 || return 1 # handle exits from shell or function but don't exit interactive shell
-		@echo "Do dangerous stuff now!"
-	fi
