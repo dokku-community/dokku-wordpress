@@ -125,9 +125,11 @@ endif
 ifndef SERVER_NAME
 	$(error "Missing SERVER_NAME environment variable, this should be something like 'dokku.me'")
 endif
-	$(DOKKU_CMD) -- --force apps:destroy $(APP_NAME)
 	# destroy the mysql database
+	$(DOKKU_CMD) mysql:unlink $(APP_NAME)-database $(APP_NAME)
 	$(DOKKU_CMD) mysql:destroy $(APP_NAME)-database
+	# destroy the app
+	$(DOKKU_CMD) -- --force apps:destroy $(APP_NAME)
 	# run the following commands on the server to remove storage directories on disk
 	@echo ""
 	@echo "rm -rf /var/lib/dokku/data/storage/$(APP_NAME)-plugins"
