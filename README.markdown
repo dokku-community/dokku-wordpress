@@ -44,3 +44,9 @@ export UNATTENDED_CREATION=1
 
 make build APP_NAME=blog SERVER_NAME=dokku.me
 ```
+
+You can also destroy an existing wordpress installation:
+
+```shell
+make destroy APP_NAME=blog SERVER_NAME=dokku.me UNATTENDED_CREATION=1
+```
