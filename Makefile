@@ -125,6 +125,25 @@ endif
 ifndef SERVER_NAME
 	$(error "Missing SERVER_NAME environment variable, this should be something like 'dokku.me'")
 endif
+ifndef UNATTENDED_CREATION
+	# destroy the mysql database
+	@echo ""
+	@echo "dokku mysql:unlink $(APP_NAME)-database $(APP_NAME)"
+	@echo "dokku mysql:destroy $(APP_NAME)-database"
+	@echo ""
+	# destroy the app
+	@echo ""
+	@echo "dokku -- --force apps:destroy $(APP_NAME)"
+	@echo ""
+	# run the following commands on the server to remove storage directories on disk
+	@echo ""
+	@echo "rm -rf /var/lib/dokku/data/storage/$(APP_NAME)-plugins"
+	@echo "rm -rf /var/lib/dokku/data/storage/$(APP_NAME)-uploads"
+	@echo ""
+	# now, on your local machine, cd into your app's parent directory and remove the app
+	@echo ""
+	@echo "rm -rf $(APP_NAME)"
+else
 	# destroy the mysql database
 	$(DOKKU_CMD) mysql:unlink $(APP_NAME)-database $(APP_NAME)
 	$(DOKKU_CMD) mysql:destroy $(APP_NAME)-database
@@ -138,3 +157,4 @@ endif
 	# now, on your local machine, cd into your app's parent directory and remove the app
 	@echo ""
 	@echo "rm -rf $(APP_NAME)"
+endif
