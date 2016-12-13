@@ -44,7 +44,7 @@ ifndef WGET_INSTALLED
 endif
 endif
 	# creating the wordpress repo
-	@test -d $(APP_NAME) || (git clone --quiet https://github.com/WordPress/WordPress.git $(APP_NAME) && cd $(APP_NAME) && git checkout -q tags/$(WORDPRESS_VERSION) && git branch -qD master && git checkout -qb master)
+	@test -d $(APP_NAME) || (mkdir -p $(APP_NAME) && cd $(APP_NAME) && git init --quiet && git remote add origin https://github.com/WordPress/WordPress.git && git pull --quiet --depth=1 origin tags/$(WORDPRESS_VERSION))
 	# adding wp-config.php from gist
 	@test -f $(APP_NAME)/wp-config.php || (cp config/wp-config.php $(APP_NAME)/wp-config.php && cd $(APP_NAME) && git add wp-config.php && git commit -qm "Adding environment-variable based wp-config.php")
 	# adding .env file to configure buildpack
