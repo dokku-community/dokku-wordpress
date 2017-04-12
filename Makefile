@@ -82,6 +82,7 @@ ifndef UNATTENDED_CREATION
 	@echo ""
 	# setup your mysql database and link it to your app
 	@echo ""
+	@echo "export MYSQL_IMAGE_VERSION=\"5.6\""
 	@echo "dokku mysql:create $(APP_NAME)-database"
 	@echo "dokku mysql:link $(APP_NAME)-database $(APP_NAME)"
 	@echo ""
