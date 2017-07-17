@@ -1,5 +1,6 @@
 *
 !Makefile
+!plugin.toml
 !README.markdown
 !LICENSE.txt
 !.editorconfig
