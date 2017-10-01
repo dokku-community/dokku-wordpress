@@ -5,7 +5,7 @@ A repository to help you setup WordPress on a Dokku server.
 ## Requirements
 
 - A Dokku server. Tested on 0.7.2+
-- The [dokku-mysql](https://github.com/dokku/dokku-mysql) plugin
+- The [dokku-mysql](https://github.com/dokku/dokku-mysql) or [dokku-mariadb](https://github.com/dokku/dokku-mariadb) plugin
 - `make` installed locally
 - `curl` or `wget` installed locally
 
