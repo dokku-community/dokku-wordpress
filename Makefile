@@ -47,6 +47,8 @@ endif
 	@test -d $(APP_NAME) || (git clone --quiet --branch=$(WORDPRESS_VERSION) --single-branch https://github.com/WordPress/WordPress.git $(APP_NAME) && cd $(APP_NAME) && git checkout -qb master)
 	# adding wp-config.php from gist
 	@test -f $(APP_NAME)/wp-config.php || (cp config/wp-config.php $(APP_NAME)/wp-config.php && cd $(APP_NAME) && git add wp-config.php && git commit -qm "Adding environment-variable based wp-config.php")
+	# adding Procfile to configure deployment
+	@test -f $(APP_NAME)/Procfile   || (echo "web: heroku-php-apache2" > $(APP_NAME)/Procfile && cd $(APP_NAME) && git add Procfile && git commit -qm "Adding procfile to repository")
 	# adding .env file to configure buildpack
 	@test -f $(APP_NAME)/.buildpacks   || (echo "https://github.com/heroku/heroku-buildpack-php.git#$(BUILDPACK_VERSION)" > $(APP_NAME)/.buildpacks && cd $(APP_NAME) && git add .buildpacks && git commit -qm "Forcing php buildpack usage")
 	# ensuring our composer.json loads with php 5.6 and loads the mysql extension
