@@ -123,10 +123,10 @@ else
 	@cp -r $(APP_NAME)/wp-content/themes  /var/lib/dokku/data/storage/$(APP_NAME)-themes
 	@chown 32767:32767 /var/lib/dokku/data/storage/$(APP_NAME)-themes
 	@echo ""
-	# push app to deploy
+	# now, on your local machine, change directory to your new wordpress app, and push it up
 	@echo ""
-	@cd $(APP_NAME)
-	@git push dokku master
+	@echo "cd $(APP_NAME)"
+	@echo "git push dokku master"
 endif
 
 .PHONY: destroy
@@ -168,7 +168,7 @@ else
 	@rm -rf /var/lib/dokku/data/storage/$(APP_NAME)-uploads
 	@rm -rf /var/lib/dokku/data/storage/$(APP_NAME)-themes
 	@echo ""
-	# removing the app
+	# removing the app directory
 	@echo ""
 	@rm -rf $(APP_NAME)
 	# done
