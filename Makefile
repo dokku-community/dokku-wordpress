@@ -120,7 +120,7 @@ else
 	@echo "chown 32767:32767 /var/lib/dokku/data/storage/$(APP_NAME)-plugins"
 	@echo "mkdir -p /var/lib/dokku/data/storage/$(APP_NAME)-uploads"
 	@echo "chown 32767:32767 /var/lib/dokku/data/storage/$(APP_NAME)-uploads"
-	@echo "mkdir -p /var/lib/dokku/data/storage/$(APP_NAME)-themes"
+	@echo "cp -r $(APP_NAME)/wp-content/themes  /var/lib/dokku/data/storage/$(APP_NAME)-themes"
 	@echo "chown 32767:32767 /var/lib/dokku/data/storage/$(APP_NAME)-themes"
 	@echo ""
 	# now, on your local machine, change directory to your new wordpress app, and push it up
