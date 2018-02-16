@@ -114,7 +114,7 @@ else
 	$(DOKKU_CMD) mysql:link $(APP_NAME)-database $(APP_NAME)
 	@/tmp/wp-salts
 	@echo ""
-	# run the following commands on the server to ensure data is stored properly on disk
+	# create plugins,uploads and themes directory to ensure data is stored properly on disk
 	@echo ""
 	@mkdir -p /var/lib/dokku/data/storage/$(APP_NAME)-plugins
 	@chown 32767:32767 /var/lib/dokku/data/storage/$(APP_NAME)-plugins
@@ -123,8 +123,9 @@ else
 	@cp -r $(APP_NAME)/wp-content/themes  /var/lib/dokku/data/storage/$(APP_NAME)-themes
 	@chown 32767:32767 /var/lib/dokku/data/storage/$(APP_NAME)-themes
 	@echo ""
-	# now, on your local machine, change directory to your new wordpress app, and push it up
+	# push app to deploy
 	@echo ""
+	@cd $(APP_NAME)
 	@git push dokku master
 endif
 
@@ -161,13 +162,14 @@ else
 	$(DOKKU_CMD) mysql:destroy $(APP_NAME)-database
 	# destroy the app
 	$(DOKKU_CMD) -- --force apps:destroy $(APP_NAME)
-	# run the following commands on the server to remove storage directories on disk
+	# remove storage directories on disk
 	@echo ""
 	@rm -rf /var/lib/dokku/data/storage/$(APP_NAME)-plugins
 	@rm -rf /var/lib/dokku/data/storage/$(APP_NAME)-uploads
 	@rm -rf /var/lib/dokku/data/storage/$(APP_NAME)-themes
 	@echo ""
-	# now, on your local machine, cd into your app's parent directory and remove the app
+	# removing the app
 	@echo ""
 	@rm -rf $(APP_NAME)
+	# done
 endif
