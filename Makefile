@@ -84,8 +84,8 @@ ifndef UNATTENDED_CREATION
 	@echo ""
 	# setup themes persistent storage
 	@echo ""
-	@echo "mkdir -p /var/lib/dokku/data/storage/$(APP_NAME)-themes"
-	@echo "chown 32767:32767 /var/lib/dokku/data/storage/$(APP_NAME)-themes"
+	@echo "cp -r $(APP_NAME)/wp-content/themes  /var/lib/dokku/data/storage/$(APP_NAME)-themes"
+	@echo "chown -R 32767:32767 /var/lib/dokku/data/storage/$(APP_NAME)-themes"
 	@echo "dokku storage:mount $(APP_NAME) /var/lib/dokku/data/storage/$(APP_NAME)-themes:/app/wp-content/themes"
 	@echo ""
 	# setup your mysql database and link it to your app
