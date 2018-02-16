@@ -116,17 +116,16 @@ else
 	@echo ""
 	# run the following commands on the server to ensure data is stored properly on disk
 	@echo ""
-	@echo "mkdir -p /var/lib/dokku/data/storage/$(APP_NAME)-plugins"
-	@echo "chown 32767:32767 /var/lib/dokku/data/storage/$(APP_NAME)-plugins"
-	@echo "mkdir -p /var/lib/dokku/data/storage/$(APP_NAME)-uploads"
-	@echo "chown 32767:32767 /var/lib/dokku/data/storage/$(APP_NAME)-uploads"
-	@echo "cp -r $(APP_NAME)/wp-content/themes  /var/lib/dokku/data/storage/$(APP_NAME)-themes"
-	@echo "chown 32767:32767 /var/lib/dokku/data/storage/$(APP_NAME)-themes"
+	@mkdir -p /var/lib/dokku/data/storage/$(APP_NAME)-plugins
+	@chown 32767:32767 /var/lib/dokku/data/storage/$(APP_NAME)-plugins
+	@mkdir -p /var/lib/dokku/data/storage/$(APP_NAME)-uploads
+	@chown 32767:32767 /var/lib/dokku/data/storage/$(APP_NAME)-uploads
+	@cp -r $(APP_NAME)/wp-content/themes  /var/lib/dokku/data/storage/$(APP_NAME)-themes
+	@chown 32767:32767 /var/lib/dokku/data/storage/$(APP_NAME)-themes
 	@echo ""
 	# now, on your local machine, change directory to your new wordpress app, and push it up
 	@echo ""
-	@echo "cd $(APP_NAME)"
-	@echo "git push dokku master"
+	@git push dokku master
 endif
 
 .PHONY: destroy
@@ -164,11 +163,11 @@ else
 	$(DOKKU_CMD) -- --force apps:destroy $(APP_NAME)
 	# run the following commands on the server to remove storage directories on disk
 	@echo ""
-	@echo "rm -rf /var/lib/dokku/data/storage/$(APP_NAME)-plugins"
-	@echo "rm -rf /var/lib/dokku/data/storage/$(APP_NAME)-uploads"
-	@echo "rm -rf /var/lib/dokku/data/storage/$(APP_NAME)-themes"
+	@rm -rf /var/lib/dokku/data/storage/$(APP_NAME)-plugins
+	@rm -rf /var/lib/dokku/data/storage/$(APP_NAME)-uploads
+	@rm -rf /var/lib/dokku/data/storage/$(APP_NAME)-themes
 	@echo ""
 	# now, on your local machine, cd into your app's parent directory and remove the app
 	@echo ""
-	@echo "rm -rf $(APP_NAME)"
+	@rm -rf $(APP_NAME)
 endif
