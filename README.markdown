@@ -50,3 +50,22 @@ You can also destroy an existing wordpress installation:
 ```shell
 make destroy APP_NAME=blog SERVER_NAME=dokku.me UNATTENDED_CREATION=1
 ```
+
+## After Installation (Optional)
+
+### Modify Upload File Size Limit
+
+Put `.user.ini` file at the root of your folder with the following content:
+
+```
+upload_max_filesize = 256M
+post_max_size = 256M
+```
+
+Then use the following command to push to dokku
+
+```shell
+git add .
+git commit -m "Modify Upload File Size Limit"
+git push dokku master
+```
