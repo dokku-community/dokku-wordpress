@@ -47,6 +47,8 @@ endif
 	@test -d $(APP_NAME) || (git clone --quiet --branch=$(WORDPRESS_VERSION) --single-branch https://github.com/WordPress/WordPress.git $(APP_NAME) && cd $(APP_NAME) && git checkout -qb master)
 	# adding wp-config.php from gist
 	@test -f $(APP_NAME)/wp-config.php || (cp config/wp-config.php $(APP_NAME)/wp-config.php && cd $(APP_NAME) && git add wp-config.php && git commit -qm "Adding environment-variable based wp-config.php")
+	# adding Procfile to configure deployment
+	@test -f $(APP_NAME)/Procfile   || (echo "web: heroku-php-apache2" > $(APP_NAME)/Procfile && cd $(APP_NAME) && git add Procfile && git commit -qm "Adding procfile to repository")
 	# adding .env file to configure buildpack
 	@test -f $(APP_NAME)/.buildpacks   || (echo "https://github.com/heroku/heroku-buildpack-php.git#$(BUILDPACK_VERSION)" > $(APP_NAME)/.buildpacks && cd $(APP_NAME) && git add .buildpacks && git commit -qm "Forcing php buildpack usage")
 	# ensuring our composer.json loads with php 5.6 and loads the mysql extension
@@ -80,6 +82,12 @@ ifndef UNATTENDED_CREATION
 	@echo "chown 32767:32767 /var/lib/dokku/data/storage/$(APP_NAME)-uploads"
 	@echo "dokku storage:mount $(APP_NAME) /var/lib/dokku/data/storage/$(APP_NAME)-uploads:/app/wp-content/uploads"
 	@echo ""
+	# setup themes persistent storage
+	@echo ""
+	@echo "cp -r $(APP_NAME)/wp-content/themes  /var/lib/dokku/data/storage/$(APP_NAME)-themes"
+	@echo "chown -R 32767:32767 /var/lib/dokku/data/storage/$(APP_NAME)-themes"
+	@echo "dokku storage:mount $(APP_NAME) /var/lib/dokku/data/storage/$(APP_NAME)-themes:/app/wp-content/themes"
+	@echo ""
 	# setup your mysql database and link it to your app
 	# if you're using MariaDB, replace mysql with mariadb
 	@echo ""
@@ -102,16 +110,19 @@ else
 	$(DOKKU_CMD) apps:create $(APP_NAME)
 	$(DOKKU_CMD) storage:mount $(APP_NAME) /var/lib/dokku/data/storage/$(APP_NAME)-plugins:/app/wp-content/plugins
 	$(DOKKU_CMD) storage:mount $(APP_NAME) /var/lib/dokku/data/storage/$(APP_NAME)-uploads:/app/wp-content/uploads
+	$(DOKKU_CMD) storage:mount $(APP_NAME) /var/lib/dokku/data/storage/$(APP_NAME)-themes:/app/wp-content/themes
 	$(DOKKU_CMD) mysql:create $(APP_NAME)-database
 	$(DOKKU_CMD) mysql:link $(APP_NAME)-database $(APP_NAME)
 	@/tmp/wp-salts
 	@echo ""
-	# run the following commands on the server to ensure data is stored properly on disk
+	# create plugins,uploads and themes directory to ensure data is stored properly on disk
 	@echo ""
-	@echo "mkdir -p /var/lib/dokku/data/storage/$(APP_NAME)-plugins"
-	@echo "chown 32767:32767 /var/lib/dokku/data/storage/$(APP_NAME)-plugins"
-	@echo "mkdir -p /var/lib/dokku/data/storage/$(APP_NAME)-uploads"
-	@echo "chown 32767:32767 /var/lib/dokku/data/storage/$(APP_NAME)-uploads"
+	@mkdir -p /var/lib/dokku/data/storage/$(APP_NAME)-plugins
+	@chown 32767:32767 /var/lib/dokku/data/storage/$(APP_NAME)-plugins
+	@mkdir -p /var/lib/dokku/data/storage/$(APP_NAME)-uploads
+	@chown 32767:32767 /var/lib/dokku/data/storage/$(APP_NAME)-uploads
+	@cp -r $(APP_NAME)/wp-content/themes  /var/lib/dokku/data/storage/$(APP_NAME)-themes
+	@chown 32767:32767 /var/lib/dokku/data/storage/$(APP_NAME)-themes
 	@echo ""
 	# now, on your local machine, change directory to your new wordpress app, and push it up
 	@echo ""
@@ -142,6 +153,7 @@ ifndef UNATTENDED_CREATION
 	@echo ""
 	@echo "rm -rf /var/lib/dokku/data/storage/$(APP_NAME)-plugins"
 	@echo "rm -rf /var/lib/dokku/data/storage/$(APP_NAME)-uploads"
+	@echo "rm -rf /var/lib/dokku/data/storage/$(APP_NAME)-themes"
 	@echo ""
 	# now, on your local machine, cd into your app's parent directory and remove the app
 	@echo ""
@@ -153,12 +165,14 @@ else
 	$(DOKKU_CMD) mysql:destroy $(APP_NAME)-database
 	# destroy the app
 	$(DOKKU_CMD) -- --force apps:destroy $(APP_NAME)
-	# run the following commands on the server to remove storage directories on disk
+	# remove storage directories on disk
 	@echo ""
-	@echo "rm -rf /var/lib/dokku/data/storage/$(APP_NAME)-plugins"
-	@echo "rm -rf /var/lib/dokku/data/storage/$(APP_NAME)-uploads"
+	@rm -rf /var/lib/dokku/data/storage/$(APP_NAME)-plugins
+	@rm -rf /var/lib/dokku/data/storage/$(APP_NAME)-uploads
+	@rm -rf /var/lib/dokku/data/storage/$(APP_NAME)-themes
 	@echo ""
-	# now, on your local machine, cd into your app's parent directory and remove the app
+	# removing the app directory
 	@echo ""
-	@echo "rm -rf $(APP_NAME)"
+	@rm -rf $(APP_NAME)
+	# done
 endif
