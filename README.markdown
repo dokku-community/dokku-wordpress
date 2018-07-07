@@ -69,3 +69,17 @@ git add .
 git commit -m "Modify Upload File Size Limit"
 git push dokku master
 ```
+
+### Modify nginx config limits
+Dokku's default nginx config limits the client max body size to to 1MB.
+So it may cause image upload HTTP error.
+
+Login into your server.
+
+```shell
+mkdir /home/dokku/your-wordpress-website/nginx.conf.d/
+echo 'client_max_body_size 50m;' > /home/dokku/your-wordpress-website/nginx.conf.d/upload.conf
+chown dokku:dokku /home/dokku/your-wordpress-website/nginx.conf.d/upload.conf
+service nginx reload
+```
+Where your-wordpress-website is the app name
