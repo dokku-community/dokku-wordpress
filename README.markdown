@@ -75,7 +75,7 @@ git push dokku master
 To upgrade to a later version of Wordpress, pull the later version of wordpress 
 into your generated local repo and push it.  For example, to upgrade the 
 dokku-wordpress generated 
-app `mywp` to version 4.9.8 of Wordpress:
+app `mywp` to version `4.9.8` of Wordpress:
 
 ```
 cd mywp
@@ -84,7 +84,7 @@ git fetch origin 4.9.8:latest
 git merge -X theirs latest
 ```
 
-If you get any conflicts `git merge-tool` and answer "d" (to delete) for each 
+If you get any conflicts run `git merge-tool` and answer "d" (to delete) for each 
 file in conflict, if any. Then git commit to complete the merge.
 
 `git push dokku master`
@@ -116,7 +116,7 @@ Tip: It can be tricky to view the state of the filesystem that your wordpress ap
 actually resides in, because of the layered nature of the underlying docker filesystem.
 To view the actual filesystem of your wordpress app 'mywp' on server 'dokku.me': ssh into
 your server e.g. `ssh root@dokku.me` then `dokku run mywp bash` then `ls /app/wp-content/`. 
-Alternatively install a Wordpress  
+Alternatively install a Wordpress 
 [file manager plugin](https://wordpress.org/plugins/wp-file-manager/) to view and 
 download new/customised theme files on the remote server and into your local repo. 
 
